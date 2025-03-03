@@ -26,6 +26,7 @@ const breakFastItemsRoutes = require('./Routes/breakfastItems')
 const orderRoutes = require('./Routes/orderRoutes')
 const authRoutesRoutes = require('./Routes/authRoutes')
 
+const { passportLoginLocal } = require('./Controller/auth')
 //Port
 const port = process.env.PORT || 3000
 app.use(express.json())
@@ -54,20 +55,12 @@ app.use('/api/v1/breakfastItems', breakFastItemsRoutes)
 app.use('/api/v1/order', orderRoutes)
 app.use('/api/v1/auth', authRoutesRoutes)
 
-// local strategy login
-app.post('/api/v1/auth/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) next(err)
-    if (!user) {
-      res.status(401).json({ message: info.message || 'Invalid Credentials' })
-    }
-    req.logIn(user, (err) => {
-      if (err) next(err)
-      res.status(200).json({ message: 'login success', user })
-    })
-  })(req, res, next)
-})
-
+//local strategy login
+app.use(
+  '/api/v1/auth/login',
+  passport.authenticate('local'),
+  passportLoginLocal
+)
 //google strategy
 app.get(
   '/api/v1/auth/google',
@@ -80,10 +73,10 @@ app.get('/auth/google/callback', async (req, res, next) => {
     if (!user)
       return res
         .status(401)
-        .json({ message: info.message || 'Invalid Credentials' })
+        .json({ message: info?.message || 'Invalid Credentials' })
     req.logIn(user, (error) => {
       if (error) return next(error)
-      res.status(200).json({ message: 'login success', user })
+      return res.status(200).json({ message: 'login success', user })
     })
   })(req, res, next)
 })

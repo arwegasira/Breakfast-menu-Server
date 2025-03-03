@@ -2,7 +2,9 @@ const User = require('../Module/user')
 const customErrors = require('../Error')
 const { StatusCodes } = require('http-status-codes')
 const crypto = require('crypto')
+const passport = require('passport')
 const { sendVerificationEmail } = require('../Util')
+
 const registerUser = async (req, res) => {
   let { email, name, role } = req.body
   if (!email || !name)
@@ -60,8 +62,34 @@ const verifyAccount = async (req, res) => {
   await user.save()
   res.status(StatusCodes.OK).json({ message: 'account verified successfully' })
 }
+//this method is crashing the server if user is not authenticated
+// const passportLoginLocal = (req, res, next) => {
+//   passport.authenticate('local', (err, user, info) => {
+//     if (err) next(err)
+//     if (!user) {
+//       return res
+//         .status(401)
+//         .json({ message: info?.message || 'Invalid Credentials' })
+//     } else {
+//       req.logIn(user, (err) => {
+//         if (err) next(err)
+//         return res.status(200).json({ message: 'login success', user })
+//       })
+//     }
+//   })(req, res, next)
+// }
+
+const passportLoginLocal = async (req, res) => {
+  res
+    .status(StatusCodes.OK)
+    .json({
+      message: 'login successful',
+      user: { name: req.user.name, email: req.user.email, role: req.user.role },
+    })
+}
 
 module.exports = {
   registerUser,
   verifyAccount,
+  passportLoginLocal,
 }
