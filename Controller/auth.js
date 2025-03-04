@@ -80,16 +80,30 @@ const verifyAccount = async (req, res) => {
 // }
 
 const passportLoginLocal = async (req, res) => {
-  res
-    .status(StatusCodes.OK)
-    .json({
-      message: 'login successful',
-      user: { name: req.user.name, email: req.user.email, role: req.user.role },
+  res.status(StatusCodes.OK).json({
+    message: 'login successful',
+    user: { name: req.user.name, email: req.user.email, role: req.user.role },
+  })
+}
+
+const passportGoogleLogin = async (req, res, next) => {
+  passport.authenticate('google', (err, user, info) => {
+    if (err) return next(err)
+    if (!user)
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: info?.message || 'Invalid Credentials' })
+    req.logIn(user, (error) => {
+      if (error) return next(error)
+      // return res.status(200).json({ message: 'login success', user })
+      return res.redirect(process.env.CLIENT_URL)
     })
+  })(req, res, next)
 }
 
 module.exports = {
   registerUser,
   verifyAccount,
   passportLoginLocal,
+  passportGoogleLogin,
 }

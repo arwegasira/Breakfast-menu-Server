@@ -10,7 +10,12 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')
 
 const cors = require('cors')
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+)
 
 const connect = require('./db/connect')
 require('./passport/localStrategy')
@@ -26,7 +31,7 @@ const breakFastItemsRoutes = require('./Routes/breakfastItems')
 const orderRoutes = require('./Routes/orderRoutes')
 const authRoutesRoutes = require('./Routes/authRoutes')
 
-const { passportLoginLocal } = require('./Controller/auth')
+const { passportLoginLocal, passportGoogleLogin } = require('./Controller/auth')
 //Port
 const port = process.env.PORT || 3000
 app.use(express.json())
@@ -67,19 +72,7 @@ app.get(
   passport.authenticate('google', { scope: ['profile', 'email'] })
 )
 
-app.get('/auth/google/callback', async (req, res, next) => {
-  passport.authenticate('google', (err, user, info) => {
-    if (err) return next(err)
-    if (!user)
-      return res
-        .status(401)
-        .json({ message: info?.message || 'Invalid Credentials' })
-    req.logIn(user, (error) => {
-      if (error) return next(error)
-      return res.status(200).json({ message: 'login success', user })
-    })
-  })(req, res, next)
-})
+app.get('/auth/google/callback', passportGoogleLogin)
 
 app.get(
   '/api/v1/protected-route',
