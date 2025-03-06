@@ -8,11 +8,15 @@ require('express-async-errors')
 
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
+const origin =
+  process.env.NODE_ENV === 'dev'
+    ? process.env.DEV_FRONTEND_URL
+    : process.env.PRO_FRONTEND_URL
 
 const cors = require('cors')
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin,
     credentials: true,
   })
 )
@@ -47,7 +51,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 2 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
       sameSite: 'lax',
     },
   })
