@@ -14,6 +14,19 @@ const origin =
     : process.env.PRO_FRONTEND_URL
 
 const cors = require('cors')
+const allowedOrigin = [origin, 'http://localhost:3000/api/v1']
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigin.includes(origin)) {
+//         callback(null, true)
+//       } else {
+//         callback(new Error('Not allowed by cors'))
+//       }
+//     },
+//     credentials: true,
+//   })
+// )
 app.use(
   cors({
     origin,
@@ -84,7 +97,7 @@ app.get(
 app.get('/auth/google/callback', passportGoogleLogin)
 
 // passport logout
-app.post('/api/v1/logout', passportLogout)
+app.post('/api/v1/auth/logout', passportLogout)
 
 app.get(
   '/api/v1/protected-route',
