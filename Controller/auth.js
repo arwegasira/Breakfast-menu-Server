@@ -104,10 +104,16 @@ const passportGoogleLogin = async (req, res, next) => {
     })
   })(req, res, next)
 }
-
+const passportLogout = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) return next(err)
+    res.redirect(`${frontendUrl}/login`)
+  })
+}
 module.exports = {
   registerUser,
   verifyAccount,
   passportLoginLocal,
   passportGoogleLogin,
+  passportLogout,
 }

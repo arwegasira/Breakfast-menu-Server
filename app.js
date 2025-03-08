@@ -35,7 +35,11 @@ const breakFastItemsRoutes = require('./Routes/breakfastItems')
 const orderRoutes = require('./Routes/orderRoutes')
 const authRoutesRoutes = require('./Routes/authRoutes')
 
-const { passportLoginLocal, passportGoogleLogin } = require('./Controller/auth')
+const {
+  passportLoginLocal,
+  passportGoogleLogin,
+  passportLogout,
+} = require('./Controller/auth')
 //Port
 const port = process.env.PORT || 3000
 app.use(express.json())
@@ -71,13 +75,16 @@ app.use(
   passport.authenticate('local'),
   passportLoginLocal
 )
-//google strategy
+//google strategy login
 app.get(
   '/api/v1/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 )
 
 app.get('/auth/google/callback', passportGoogleLogin)
+
+// passport logout
+app.post('/api/v1/logout', passportLogout)
 
 app.get(
   '/api/v1/protected-route',
