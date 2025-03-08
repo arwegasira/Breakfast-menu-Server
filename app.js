@@ -77,9 +77,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //routes
-app.use('/api/v1/rooms', roomsRoutes)
+app.use('/api/v1/rooms', authenticationMiddleware, roomsRoutes)
 app.use('/api/v1/breakfastItems', breakFastItemsRoutes)
-app.use('/api/v1/order', orderRoutes)
+app.use('/api/v1/order', authenticationMiddleware, orderRoutes)
 app.use('/api/v1/auth', authRoutesRoutes)
 
 //local strategy login
