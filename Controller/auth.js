@@ -5,6 +5,10 @@ const crypto = require('crypto')
 const passport = require('passport')
 const { sendVerificationEmail } = require('../Util')
 
+const frontendUrl =
+  process.env.NODE_ENV === 'dev'
+    ? process.env.DEV_FRONTEND_URL
+    : process.env.PRO_FRONTEND_URL
 const registerUser = async (req, res) => {
   let { email, name, role } = req.body
   if (!email || !name)
@@ -88,15 +92,15 @@ const passportLoginLocal = async (req, res) => {
 
 const passportGoogleLogin = async (req, res, next) => {
   passport.authenticate('google', (err, user, info) => {
-    if (err) return next(err)
-    if (!user)
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: info?.message || 'Invalid Credentials' })
+    if (err || !user) {
+      // return next()
+      let message = info?.message || 'Invalid Credentials'
+      message = encodeURIComponent(message)
+      return res.redirect(`${frontendUrl}/login?error=${message}`)
+    }
     req.logIn(user, (error) => {
       if (error) return next(error)
-      // return res.status(200).json({ message: 'login success', user })
-      return res.redirect(process.env.CLIENT_URL)
+      return res.redirect(`${frontendUrl}/`)
     })
   })(req, res, next)
 }
