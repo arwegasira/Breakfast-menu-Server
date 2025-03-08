@@ -100,7 +100,16 @@ const passportGoogleLogin = async (req, res, next) => {
     }
     req.logIn(user, (error) => {
       if (error) return next(error)
-      return res.redirect(`${frontendUrl}/`)
+      const userParm = {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+      return res.redirect(
+        `${frontendUrl}?googleSignRedirect=true&&user=${encodeURIComponent(
+          JSON.stringify(userParm)
+        )}`
+      )
     })
   })(req, res, next)
 }
