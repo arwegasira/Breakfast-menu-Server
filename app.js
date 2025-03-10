@@ -47,6 +47,8 @@ const roomsRoutes = require('./Routes/roomRoute')
 const breakFastItemsRoutes = require('./Routes/breakfastItems')
 const orderRoutes = require('./Routes/orderRoutes')
 const authRoutesRoutes = require('./Routes/authRoutes')
+const orderItemsSelection = require('./Routes/itemSelectionRoute')
+const homeRoomSelection = require('./Routes/homeRoomSelection')
 
 const {
   passportLoginLocal,
@@ -78,7 +80,13 @@ app.use(passport.session())
 
 //routes
 app.use('/api/v1/rooms', authenticationMiddleware, roomsRoutes)
-app.use('/api/v1/breakfastItems', breakFastItemsRoutes)
+app.use('/api/v1/home', homeRoomSelection)
+app.use(
+  '/api/v1/breakfastItems',
+  authenticationMiddleware,
+  breakFastItemsRoutes
+)
+app.use('/api/v1/your-order', orderItemsSelection)
 app.use('/api/v1/order', authenticationMiddleware, orderRoutes)
 app.use('/api/v1/auth', authRoutesRoutes)
 
