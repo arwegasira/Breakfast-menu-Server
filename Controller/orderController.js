@@ -60,7 +60,30 @@ const getAllOrder = async (req, res) => {
   const orders = await Order.find(search).sort('status')
   res.status(StatusCodes.OK).json({ message: 'success' })
 }
+const getAllOrdersV2 = async (req, res, next) => {
+  const { status, room, orderNumber } = req.query
+  const filter = {}
+  if (status) filter.status = status
+  if (orderNumber) filter.orderNumber = orderNumber
+  if (room) {
+    const roomSearch = {
+      name: room,
+    }
+    filter.roomDetails = roomSearch
+  }
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const skip = (page - 1) * limit
+  let result = Order.find(filter)
+  result = result.skip(skip).limit(limit).sort('-createdAt')
+  const count = await Order.countDocuments(filter)
+  const pageCount = Math.ceil(count / limit)
+  const orders = await result
+
+  res.status(StatusCodes.OK).json({ orders, currentPage: page, pageCount })
+}
 module.exports = {
   createOrder,
   getAllOrder,
+  getAllOrdersV2,
 }
