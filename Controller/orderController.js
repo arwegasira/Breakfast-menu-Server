@@ -62,14 +62,11 @@ const getAllOrder = async (req, res) => {
 }
 const getAllOrdersV2 = async (req, res, next) => {
   const { status, room, orderNumber } = req.query
-  const filter = {}
+  let filter = {}
   if (status) filter.status = status
   if (orderNumber) filter.orderNumber = orderNumber
   if (room) {
-    const roomSearch = {
-      name: room,
-    }
-    filter.roomDetails = roomSearch
+    filter = { ...filter, 'roomDetails.name': room }
   }
   const page = Number(req.query.page) || 1
   const limit = Number(req.query.limit) || 10
