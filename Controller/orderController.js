@@ -79,8 +79,15 @@ const getAllOrdersV2 = async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({ orders, currentPage: page, pageCount })
 }
+
+const getOrderById = async (req, res, next) => {
+  const { id } = req.params
+  const order = await Order.findOne({ _id: id })
+  res.status(StatusCodes.OK).json({ order: order })
+}
 module.exports = {
   createOrder,
   getAllOrder,
   getAllOrdersV2,
+  getOrderById,
 }
