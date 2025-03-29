@@ -5,8 +5,9 @@ const {
   getAllOrder,
   getAllOrdersV2,
   getOrderById,
+  updateOrder,
 } = require('../Controller/orderController')
 router.route('/').post(createOrder).get(getAllOrdersV2)
-router.get('/:id', getOrderById)
+router.route('/:id').get(getOrderById).patch(updateOrder)
 
 module.exports = router

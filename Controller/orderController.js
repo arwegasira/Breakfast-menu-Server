@@ -79,6 +79,13 @@ const getAllOrdersV2 = async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({ orders, currentPage: page, pageCount })
 }
+const updateOrder = async (req, res, next) => {
+  const { id } = req.params
+  const order = await Order.findOneAndUpdate({ _id: id }, req.body, {
+    returnDocument: 'after',
+  })
+  res.status(StatusCodes.OK).json({ order, msg: 'success' })
+}
 
 const getOrderById = async (req, res, next) => {
   const { id } = req.params
@@ -90,4 +97,5 @@ module.exports = {
   getAllOrder,
   getAllOrdersV2,
   getOrderById,
+  updateOrder,
 }
