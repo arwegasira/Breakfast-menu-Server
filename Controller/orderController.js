@@ -92,10 +92,20 @@ const getOrderById = async (req, res, next) => {
   const order = await Order.findOne({ _id: id })
   res.status(StatusCodes.OK).json({ order: order })
 }
+
+const mostOrderedItems = async (req, res, next) => {
+  const items = await Order.aggregate([
+    { $unwind: '$orderItems' },
+    { $group: { _id: '$orderItems', total: { $sum: 1 } } },
+    { $sort: { total: -1 } },
+  ])
+  res.status(StatusCodes.OK).json({ items })
+}
 module.exports = {
   createOrder,
   getAllOrder,
   getAllOrdersV2,
   getOrderById,
   updateOrder,
+  mostOrderedItems,
 }
