@@ -17,7 +17,9 @@ const fetchUsers = async (req, res, next) => {
   const count = await User.countDocuments(filter)
   const pageCount = Math.ceil(count / limit)
   const users = await result
-  res.status(StatusCodes.OK).json({ msg: 'OK', users })
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: 'OK', users, meta: { page, pageCount, count } })
 }
 
 module.exports = {
