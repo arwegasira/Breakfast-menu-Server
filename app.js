@@ -49,6 +49,7 @@ const orderRoutes = require('./Routes/orderRoutes')
 const authRoutesRoutes = require('./Routes/authRoutes')
 const orderItemsSelection = require('./Routes/itemSelectionRoute')
 const homeRoomSelection = require('./Routes/homeRoomSelection')
+const usersRoutes = require('./Routes/users')
 
 const {
   passportLoginLocal,
@@ -88,6 +89,7 @@ app.use(
 )
 app.use('/api/v1/your-order', orderItemsSelection)
 app.use('/api/v1/order', authenticationMiddleware, orderRoutes)
+app.use('/api/v1/users', authenticationMiddleware, usersRoutes)
 app.use('/api/v1/auth', authRoutesRoutes)
 
 //local strategy login
